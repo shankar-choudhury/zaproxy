@@ -78,12 +78,13 @@ ENV HOME=/home/zap/
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
+# Same issue as Dockerfile-live. By doing this, Dockerfile-weekly can be described as “stateless but zap-user-specific” when you later talk about tmpfs mounts or runtime cleanup
 COPY --link --chown=1000:1000 zap* CHANGELOG.md /zap/
 COPY --link --from=builder --chown=1000:1000 /zap/webswing /zap/webswing
 COPY --link --chown=1000:1000 webswing.config /zap/webswing/
 COPY --link --chown=1000:1000 webswing.properties /zap/webswing/
 COPY --link --chown=1000:1000 policies /home/zap/.ZAP_D/policies/
-COPY --link --chown=1000:1000 policies /root/.ZAP_D/policies/
+# COPY --link --chown=1000:1000 policies /root/.ZAP_D/policies/
 COPY --link --chown=1000:1000 scripts /home/zap/.ZAP_D/scripts/
 COPY --link --chown=1000:1000 .xinitrc /home/zap/
 COPY --link --chown=1000:1000 firefox /home/zap/.mozilla/firefox/
