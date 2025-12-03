@@ -95,13 +95,22 @@ ENV HOME=/home/zap/
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
+# By copying the same policies into both:
+# 	/home/zap/.ZAP_D/policies (ZAP home for the unprivileged user) 
+#	/root/.ZAP_D/policies (root’s ZAP home)
+# Then the following happens:
+#	Root’s home ends up with a full ZAP configuration tree it doesn’t need.
+#	If root ever runs ZAP inside the container, it’ll use a separate, duplicated “home” with policies, logs, and potentially later scan data
+#	It increases the amount of ZAP state you now have to worry about wiping/monitoring.
+# This violates the principle “only initialize and persist state where the main, unprivileged process will use it”.
+# By removing the copying to root's ZAP home, All ZAP configuration and user state live under one clearly defined home and guarantees that ZAP isn't using /root/.ZAP.D in the background unknowingly 
 COPY --link --from=builder --chown=1000:1000 /zap-src/zaproxy/zap/build/distFilesWeekly/ /zap/
 COPY --link --chown=1000:1000 zap* CHANGELOG.md /zap/
 COPY --link --from=builder --chown=1000:1000 /zap/webswing /zap/webswing
 COPY --link --chown=1000:1000 webswing.config /zap/webswing/
 COPY --link --chown=1000:1000 webswing.properties /zap/webswing/
 COPY --link --chown=1000:1000 policies /home/zap/.ZAP_D/policies/
-COPY --link --chown=1000:1000 policies /root/.ZAP_D/policies/
+# COPY --link --chown=1000:1000 policies /root/.ZAP_D/policies/
 COPY --link --chown=1000:1000 scripts /home/zap/.ZAP_D/scripts/
 COPY --link --chown=1000:1000 .xinitrc /home/zap/
 COPY --link --chown=1000:1000 firefox /home/zap/.mozilla/firefox/

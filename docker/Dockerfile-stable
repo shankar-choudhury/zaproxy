@@ -99,11 +99,12 @@ ENV HOME=/home/zap/
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
+#Same Issue as in Dockerfile-live, removing that will ensure ZAP's stable configuration exists only in the non-root user's home
 COPY --link --chown=1000:1000 zap* CHANGELOG.md /zap/
 COPY --link --chown=1000:1000 webswing.config /zap/webswing/
 COPY --link --chown=1000:1000 webswing.properties /zap/webswing/
 COPY --link --chown=1000:1000 policies /home/zap/.ZAP/policies/
-COPY --link --chown=1000:1000 policies /root/.ZAP/policies/
+# COPY --link --chown=1000:1000 policies /root/.ZAP/policies/
 # The scan script loads the scripts from dev home dir.
 COPY --link --chown=1000:1000 scripts /home/zap/.ZAP_D/scripts/
 COPY --link --chown=1000:1000 .xinitrc /home/zap/
